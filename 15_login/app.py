@@ -1,7 +1,7 @@
-# Pratham Rawat
+# Jesse Chen & Pratham Rawat
 # SoftDev1 pd1
-# K<n> -- <Title/Topic/Summary>
-# 2019-09-18   
+# K15 -- ?
+# 2019-10-02
 
 from flask import Flask, render_template
 
