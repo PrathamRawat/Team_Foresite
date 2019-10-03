@@ -13,16 +13,14 @@ ErrorStatus = ""
 @app.route("/")
 def whyTho():
     try:
-        userData = request.cookies
-        print(userData)
-        username = userData["username"]
+        username = session["username"]
         print("Username: " + username)
-        userpswd = userData["password"]
+        userpswd = session["password"]
         print("Password: " + userpswd)
-        return redirect("/auth")
+        return redirect("/welcome")
     except Exception as e:
         print(e)
-        return redirect("/welcome")
+        return redirect("/login")
 
 @app.route("/login", methods=['POST', 'GET'])
 def logIn():
@@ -31,7 +29,13 @@ def logIn():
 
 @app.route("/welcome")
 def welcome():
-    return "Welcome"
+    return render_template('welcome.html')
+
+@app.route("/logout")
+def logout():
+    session.pop("username")
+    session.pop("password")
+    return redirect("/")
 
 @app.route("/auth", methods=['POST'])
 def authenticate():
