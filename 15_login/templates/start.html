@@ -5,7 +5,8 @@
     </head>
     <body>
         <h1><center>Team Foresite Login Page</center></h1>
-        <form action="/auth" method="POST">
+        <h6><center style="color:red">{{ error }}<center></h6>
+        <form action="/login" method="POST">
             <center>Username <input type="text" name="username"></center>
             <center>Password <input type="text" name="password"></center>
             <center><input type="submit" name="submitButton"></center>
