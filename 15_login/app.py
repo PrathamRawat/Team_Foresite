@@ -3,37 +3,68 @@
 # K15 -- ?
 # 2019-10-02
 
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request, redirect
+import os
 
 app = Flask(__name__);
+
+ErrorStatus = ""
 
 @app.route("/")
 def whyTho():
     try:
         userData = request.cookies
+        print(userData)
         username = userData["username"]
+        print("Username: " + username)
         userpswd = userData["password"]
-        return checkCredentials(username, userpswd)
-    except:
-        return render_template('start.html')
+        print("Password: " + userpswd)
+        return redirect("/auth")
+    except Exception as e:
+        print(e)
+        return redirect("/welcome")
 
-@app.route("/login", methods=['POST'])
+@app.route("/login", methods=['POST', 'GET'])
 def logIn():
-    return render_template('start.html')
+    global ErrorStatus
+    return render_template('start.html', error = ErrorStatus)
 
-def checkCredentials(username, password):
-    userData = open("data/accounts.csv");
+@app.route("/welcome")
+def welcome():
+    return "Welcome"
+
+@app.route("/auth", methods=['POST'])
+def authenticate():
+    userData = request.form
+    print("data: " + str(userData))
+    username = userData["username"]
+    userpswd = userData["password"]
+    users = open("data/accounts.csv");
     accountsDict = {}
-    for line in userData:
-        try:
-            if(accountsDict[username] != password):
-                print("Incorrect Password")
-                return render_template("start.html", error = "Incorrect Password!")
-        except: #Will run if the username does not exist in the Dictionary
-            print("No username found!")
-            return render_template("start.html", error = "Incorrect Username!")
-
+    for line in users:
+        temp = line.strip().split(',')
+        accountsDict[temp[0]] = temp[1]
+    try:
+        if(accountsDict[username] != userpswd):
+#            print(accountsDict[username] + " = " + userpswd)
+            print("Incorrect Password")
+            global ErrorStatus
+            ErrorStatus = "Incorrect Password!"
+            return redirect("/login")
+        else:
+            session["username"] = accountsDict[username]
+            session["password"] = userpswd
+            print(request.cookies)
+            return redirect("/welcome")
+    except Exception as e: #Will run if the username does not exist in the Dictionary
+        print(e)
+        print("No username found!")
+        ErrorStatus = "Incorrect Username!"
+        return redirect("/login")
 
 if __name__ == "__main__":
+    app.secret_key = "yeet"
+    app.config['SESSION_PERMANENT'] = True
+#    app.config['SESSION_TYPE'] = 'memcached'
     app.debug = True
     app.run()
