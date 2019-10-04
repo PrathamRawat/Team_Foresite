@@ -9,6 +9,14 @@
         <h1><center>Just a Random Login Page on the Internet</center></h1>
         {% endblock %}
 
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <h3><center style="color:red">{{ message }}</center></h3>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         {% block body %}
         <form action="/auth" method="POST">
             <center>

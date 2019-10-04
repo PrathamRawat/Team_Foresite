@@ -1,14 +1,12 @@
 # Jesse Chen & Pratham Rawat
 # SoftDev1 pd1
-# K15 -- ?
+# K16 -- Oh yes, perhaps I do...
 # 2019-10-02
 
-from flask import Flask, render_template, session, request, redirect
+from flask import Flask, render_template, session, request, redirect, flash
 import os
 
 app = Flask(__name__);
-
-ErrorStatus = ""
 
 @app.route("/")
 def whyTho():
@@ -25,7 +23,7 @@ def whyTho():
 @app.route("/login", methods=['POST', 'GET'])
 def logIn():
     global ErrorStatus
-    return render_template('start.html', error = ErrorStatus)
+    return render_template('start.html')
 
 @app.route("/welcome")
 def welcome():
@@ -52,8 +50,7 @@ def authenticate():
         if(accountsDict[username] != userpswd):
 #            print(accountsDict[username] + " = " + userpswd)
             print("Incorrect Password")
-            global ErrorStatus
-            ErrorStatus = "Incorrect Password!"
+            flash("Incorrect Password!")
             return redirect("/login")
         else:
             session["username"] = accountsDict[username]
@@ -63,7 +60,7 @@ def authenticate():
     except Exception as e: #Will run if the username does not exist in the Dictionary
         print(e)
         print("No username found!")
-        ErrorStatus = "Incorrect Username!"
+        flash("Incorrect Username!")
         return redirect("/login")
 
 if __name__ == "__main__":
